@@ -103,6 +103,30 @@ val WeeklyCheckUp = state(Interaction) {
 
     onResponse<No> {
         furhat.gesture(Gestures.BrowFrown)
+        goto(NegativeMedicationResponse)
+        //furhat.ask("Why is that?")
+    }
+}
+
+val NegativeMedicationResponse = state(Interaction) {
+    onEntry {
         furhat.ask("Why is that?")
+    }
+
+    onResponse<ForgetMedicationResponse> {
+        furhat.gesture(Gestures.Oh)
+        furhat.say("It's easy to forget. Good thing that I reminded you")
+    }
+
+    onResponse<NoTimeMedicationResponse> {
+        furhat.gesture(Gestures.Oh)
+        furhat.ask("All right! Just don’t forget to take them")
+        furhat.gesture(Gestures.Wink)
+    }
+
+    onResponse<NoMedicationResponse> {
+        furhat.gesture(Gestures.Oh)
+        furhat.ask("I see. That’s good then!")
+        furhat.gesture(Gestures.Wink)
     }
 }

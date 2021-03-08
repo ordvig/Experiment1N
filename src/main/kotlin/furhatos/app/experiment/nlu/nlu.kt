@@ -75,3 +75,24 @@ class NeutralResponse(): Intent() {
         return listOf("I am okay")
     }
 }
+
+class ForgetMedicationResponse(): Intent() {
+    override fun getExamples(lang: Language): List<String> {
+        return listOf("I forgot them", "I forgot to have them", "Forgot")
+    }
+}
+
+class NoTimeMedicationResponse(): Intent() {
+    override fun getExamples(lang: Language): List<String> {
+        return listOf("No time to take my pills"
+            , "Too busy to take my medicines"
+            , "No time to have my medicines"
+            , "Couldn't find time to take medicines")
+    }
+}
+
+class NoMedicationResponse(): Intent() {
+    override fun getExamples(lang: Language): List<String> {
+        return listOf("Nothing to take today")
+    }
+}
