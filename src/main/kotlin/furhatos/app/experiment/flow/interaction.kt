@@ -3,10 +3,13 @@ package furhatos.app.experiment.flow
 import furhatos.nlu.common.*
 import furhatos.flow.kotlin.*
 import furhatos.app.experiment.nlu.*
+import furhatos.flow.kotlin.voice.Voice
 import furhatos.gestures.Gestures
 import furhatos.gestures.BasicParams
 import furhatos.gestures.defineGesture
 import furhatos.records.Location
+
+var hasFamily = false
 
 val Start : State = state(Interaction) {
 
@@ -59,6 +62,7 @@ val empathicRobot = utterance {
     +Gestures.Wink
 }
 
+// Conversation about how you feeling
 val WeeklyIntroduction = state(Interaction) {
     onEntry {
         random(
@@ -91,6 +95,7 @@ val WeeklyIntroduction = state(Interaction) {
     }
 }
 
+// Conversation about Medication
 val WeeklyCheckUp = state(Interaction) {
     onEntry {
         furhat.ask("Did you take your medication?")
@@ -99,12 +104,13 @@ val WeeklyCheckUp = state(Interaction) {
     onResponse<Yes> {
         furhat.gesture(Gestures.BigSmile)
         furhat.say("That is great!")
+        furhat.gesture(MyGesture)
+        goto(SleepWellConversation)
     }
 
     onResponse<No> {
         furhat.gesture(Gestures.BrowFrown)
         goto(NegativeMedicationResponse)
-        //furhat.ask("Why is that?")
     }
 }
 
@@ -116,17 +122,111 @@ val NegativeMedicationResponse = state(Interaction) {
     onResponse<ForgetMedicationResponse> {
         furhat.gesture(Gestures.Oh)
         furhat.say("It's easy to forget. Good thing that I reminded you")
+        goto(SleepWellConversation)
     }
 
     onResponse<NoTimeMedicationResponse> {
         furhat.gesture(Gestures.Oh)
         furhat.ask("All right! Just don’t forget to take them")
         furhat.gesture(Gestures.Wink)
+        goto(SleepWellConversation)
     }
 
     onResponse<NoMedicationResponse> {
         furhat.gesture(Gestures.Oh)
         furhat.ask("I see. That’s good then!")
-        furhat.gesture(Gestures.Wink)
+        furhat.gesture(MyGesture)
+        goto(SleepWellConversation)
+    }
+}
+
+// Conversation about Sleep
+val SleepWellConversation = state(Interaction) {
+    onEntry {
+        furhat.ask("Do you sleep well at night?")
+    }
+
+    onResponse<Yes>{
+        furhat.say("I'm glad to hear that!")
+        goto(TiredFeelingConversation)
+    }
+
+    onResponse<No>{
+        furhat.say("I'm sorry to hear that!")
+        goto(TiredFeelingConversation)
+    }
+}
+
+// Conversation about feeling tired
+val TiredFeelingConversation = state(Interaction) {
+    onEntry {
+        furhat.ask("Do you feel tired during the day?")
+    }
+
+    onResponse<Yes>{
+        furhat.gesture(Gestures.BrowFrown)
+        goto(PositiveTiredResponse)
+    }
+
+    onResponse<No>{
+        furhat.say("Sounds good!")
+        goto(LonelyFeelingConversation)
+    }
+}
+
+val PositiveTiredResponse = state(Interaction) {
+    onEntry {
+        furhat.ask("${furhat.voice.emphasis("Oh")} All right. Have you told the caretaker about it?")
+    }
+
+    onResponse<Yes>{
+        furhat.say("That’s good. I hope you’ll relax more")
+        furhat.gesture(MyGesture)
+        goto(LonelyFeelingConversation)
+    }
+
+    onResponse<No>{
+        furhat.gesture(Gestures.Thoughtful)
+        furhat.say("I see. I would suggest you take it up with your caretaker. Maybe you lack some minerals or vitamins.")
+        furhat.gesture(MyGesture)
+        goto(LonelyFeelingConversation)
+    }
+}
+
+// About feeling lonely
+val LonelyFeelingConversation = state(Interaction) {
+    onEntry {
+        furhat.ask("Do you feel lonely?")
+    }
+
+    onResponse<Yes>{
+        furhat.gesture(Gestures.Oh)
+        //goto(WeeklyIntroduction)
+    }
+
+    onResponse<No>{
+        furhat.gesture(Gestures.BigSmile)
+        furhat.say("I’m very glad to hear that!")
+        //goto()
+    }
+}
+
+val OnPositiveLonelyFeeling = state(Interaction) {
+    onEntry {
+        furhat.ask("That’s understandable with the current situation. Do you have any family or friends you can talk to?")
+    }
+
+    onResponse<Yes>{
+        furhat.say(furhat.voice.emphasis("That is good"))
+        hasFamily = true
+        furhat.gesture(MyGesture)
+//        goto()
+    }
+
+    onResponse<No>{
+        furhat.gesture(Gestures.ExpressSad)
+        furhat.say("I’m sorry to hear that")
+        hasFamily = false
+        //goto()
     }
 }
