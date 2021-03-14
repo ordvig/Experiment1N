@@ -383,7 +383,7 @@ val HobbiesConversation = state(Interaction) {
 
     onResponse<HobbiesResponse>{
         furhat.gesture(Gestures.Smile)
-        furhat.say("Alright!")
+        furhat.say(furhat.voice.emphasis("That is great!"))
         furhat.gesture(MyGesture)
         goto(OnTodayConversation)
     }
@@ -392,6 +392,13 @@ val HobbiesConversation = state(Interaction) {
         furhat.gesture(Gestures.Smile)
         furhat.say("Sure! I'll repeat.")
         reentry()
+    }
+
+    onResponse{
+        furhat.gesture(Gestures.Smile)
+        furhat.say("Alright!")
+        furhat.gesture(MyGesture)
+        goto(OnTodayConversation)
     }
 }
 
