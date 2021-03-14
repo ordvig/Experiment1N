@@ -112,6 +112,10 @@ val WeeklyCheckUp = state(Interaction) {
         furhat.ask("Did you take your medication?")
     }
 
+    onReentry {
+        furhat.ask("Did you take your medication?")
+    }
+
     onResponse<Yes> {
         furhat.gesture(Gestures.BigSmile)
         furhat.say("That is great!")
@@ -123,10 +127,20 @@ val WeeklyCheckUp = state(Interaction) {
         furhat.gesture(Gestures.BrowFrown)
         goto(NegativeMedicationResponse)
     }
+
+    onResponse<RequestRepeat>{
+        furhat.gesture(Gestures.Smile)
+        furhat.say("Sure! I'll repeat")
+        goto(currentState)
+    }
 }
 
 val NegativeMedicationResponse = state(Interaction) {
     onEntry {
+        furhat.ask("Why is that?")
+    }
+
+    onReentry {
         furhat.ask("Why is that?")
     }
 
@@ -149,11 +163,21 @@ val NegativeMedicationResponse = state(Interaction) {
         furhat.gesture(MyGesture)
         goto(SleepWellConversation)
     }
+
+    onResponse<RequestRepeat>{
+        furhat.gesture(Gestures.Smile)
+        furhat.say("Sure! I'll repeat")
+        goto(currentState)
+    }
 }
 
 // Conversation about Sleep
 val SleepWellConversation = state(Interaction) {
     onEntry {
+        furhat.ask("Do you sleep well at night?")
+    }
+
+    onReentry {
         furhat.ask("Do you sleep well at night?")
     }
 
@@ -166,11 +190,21 @@ val SleepWellConversation = state(Interaction) {
         furhat.say("I'm sorry to hear that!")
         goto(TiredFeelingConversation)
     }
+
+    onResponse<RequestRepeat>{
+        furhat.gesture(Gestures.Smile)
+        furhat.say("Sure! I'll repeat")
+        goto(currentState)
+    }
 }
 
 // Conversation about feeling tired
 val TiredFeelingConversation = state(Interaction) {
     onEntry {
+        furhat.ask("Do you feel tired during the day?")
+    }
+
+    onReentry {
         furhat.ask("Do you feel tired during the day?")
     }
 
@@ -183,10 +217,20 @@ val TiredFeelingConversation = state(Interaction) {
         furhat.say("Sounds good!")
         goto(LonelyFeelingConversation)
     }
+
+    onResponse<RequestRepeat>{
+        furhat.gesture(Gestures.Smile)
+        furhat.say("Sure! I'll repeat")
+        goto(currentState)
+    }
 }
 
 val PositiveTiredResponse = state(Interaction) {
     onEntry {
+        furhat.ask("${furhat.voice.emphasis("Oh")} All right. Have you told the caretaker about it?")
+    }
+
+    onReentry {
         furhat.ask("${furhat.voice.emphasis("Oh")} All right. Have you told the caretaker about it?")
     }
 
@@ -202,11 +246,21 @@ val PositiveTiredResponse = state(Interaction) {
         furhat.gesture(MyGesture)
         goto(LonelyFeelingConversation)
     }
+
+    onResponse<RequestRepeat>{
+        furhat.gesture(Gestures.Smile)
+        furhat.say("Sure! I'll repeat")
+        goto(currentState)
+    }
 }
 
 // About feeling lonely
 val LonelyFeelingConversation = state(Interaction) {
     onEntry {
+        furhat.ask("Do you feel lonely?")
+    }
+
+    onReentry {
         furhat.ask("Do you feel lonely?")
     }
 
@@ -221,10 +275,20 @@ val LonelyFeelingConversation = state(Interaction) {
         furhat.say("I’m very glad to hear that!")
         goto(LonelyFeelingContinution)
     }
+
+    onResponse<RequestRepeat>{
+        furhat.gesture(Gestures.Smile)
+        furhat.say("Sure! I'll repeat")
+        goto(currentState)
+    }
 }
 
 val LonelyFeelingContinution = state(Interaction) {
     onEntry {
+        furhat.ask("Do you have any family or friends you can talk to?")
+    }
+
+    onReentry {
         furhat.ask("Do you have any family or friends you can talk to?")
     }
 
@@ -241,11 +305,21 @@ val LonelyFeelingContinution = state(Interaction) {
         hasFamily = false
         goto(HobbiesConversation)
     }
+
+    onResponse<RequestRepeat>{
+        furhat.gesture(Gestures.Smile)
+        furhat.say("Sure! I'll repeat")
+        goto(currentState)
+    }
 }
 
 // About speaking to Family
 val SpokenToFamily = state(Interaction) {
     onEntry {
+        furhat.ask("Have you spoken with your family or friends recently?")
+    }
+
+    onReentry {
         furhat.ask("Have you spoken with your family or friends recently?")
     }
 
@@ -260,11 +334,21 @@ val SpokenToFamily = state(Interaction) {
         furhat.say("I see. Perhaps you could call them later")
         goto(HobbiesConversation)
     }
+
+    onResponse<RequestRepeat>{
+        furhat.gesture(Gestures.Smile)
+        furhat.say("Sure! I'll repeat")
+        goto(currentState)
+    }
 }
 
 // About howabouts of Family
 val HowAboutsOfFamily = state(Interaction) {
     onEntry {
+        furhat.ask("Is your family doing ok?")
+    }
+
+    onReentry {
         furhat.ask("Is your family doing ok?")
     }
 
@@ -279,6 +363,12 @@ val HowAboutsOfFamily = state(Interaction) {
         furhat.gesture(Gestures.ExpressSad)
         furhat.say("I’m sad to hear that")
         goto(HobbiesConversation)
+    }
+
+    onResponse<RequestRepeat>{
+        furhat.gesture(Gestures.Smile)
+        furhat.say("Sure! I'll repeat")
+        goto(currentState)
     }
 }
 
