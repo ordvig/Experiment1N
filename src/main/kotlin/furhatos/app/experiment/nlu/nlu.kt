@@ -28,6 +28,14 @@ class NeutralResponse(): Intent() {
     }
 }
 
+class HobbiesResponse(): Intent() {
+    override fun getExamples(lang: Language): List<String> {
+        return listOf("I like to watch TV",
+        "I like to talk to friends",
+        "I like gardening")
+    }
+}
+
 class ForgetMedicationResponse(): Intent() {
     override fun getExamples(lang: Language): List<String> {
         return listOf("I forgot them", "I forgot to have them", "Forgot")

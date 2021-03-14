@@ -3,7 +3,6 @@ package furhatos.app.experiment.flow
 import furhatos.nlu.common.*
 import furhatos.flow.kotlin.*
 import furhatos.app.experiment.nlu.*
-import furhatos.flow.kotlin.voice.Voice
 import furhatos.gestures.Gestures
 import furhatos.gestures.BasicParams
 import furhatos.gestures.defineGesture
@@ -11,19 +10,26 @@ import furhatos.records.Location
 
 var hasFamily = false
 
+val empathicRobot = utterance {
+    +"Hi there,"
+    +Gestures.Smile
+    +"nice to meet you again."
+    +glance(Location.LEFT)
+    +"I am so happy to interact with you again!"
+    +Gestures.Wink
+}
+
 val Start : State = state(Interaction) {
 
     onEntry {
-        furhat.say("Hello! Nice to see you!" )
+        furhat.say(empathicRobot)
         furhat.gesture(Gestures.Smile(duration = 2.0, strength = 1.0))
         furhat.ask("Is it okay to talk now?")
     }
 
     onReentry {
-        furhat.say(empathicRobot)
-        furhat.say("I am ${furhat.voice.emphasis("really")} happy to be here")
-        furhat.say("Now I will make a slight pause " +
-                "${furhat.voice.pause("1000ms")} before continuing")
+        furhat.gesture(Gestures.Smile(duration = 2.0, strength = 1.0))
+        furhat.ask("Is it okay to talk now?")
     }
 
     onResponse<Yes>{
@@ -33,8 +39,14 @@ val Start : State = state(Interaction) {
 
     onResponse<No>{
         furhat.gesture(Gestures.Surprise(duration = 1.0, strength = 0.5))
-        furhat.say("Oh! I am sorry that I am not helpful today")
-        goto(WeeklyIntroduction)
+        furhat.say("Oh! I am sorry that I am not helpful now. See you later!")
+        terminate()
+    }
+
+    onResponse<RequestRepeat>{
+        furhat.gesture(Gestures.Smile)
+        furhat.say("Sure! I'll repeat")
+        goto(currentState)
     }
 }
 
@@ -53,23 +65,16 @@ val MyGesture = defineGesture("MyGesture") {
     reset(1.04)
 }
 
-val empathicRobot = utterance {
-    +"Hi there,"
-    +Gestures.Smile
-    +"nice to meet you."
-    +glance(Location.LEFT)
-    +"I am so happy to interact with you again!"
-    +Gestures.Wink
-}
-
 // Conversation about how you feeling
 val WeeklyIntroduction = state(Interaction) {
     onEntry {
-        random(
-            //{ furhat.ask("How are you feeling today?") },
-            { furhat.ask("How are you feeling today?")
-                furhat.gesture(MyGesture)}
-        )
+        furhat.ask("How are you feeling today?")
+        furhat.gesture(MyGesture)
+    }
+
+    onReentry {
+        furhat.ask("How are you feeling today?")
+        furhat.gesture(MyGesture)
     }
 
     onResponse<NegativeResponse> {
@@ -92,6 +97,12 @@ val WeeklyIntroduction = state(Interaction) {
         furhat.say("May your day gets even better")
         furhat.gesture(MyGesture)
         goto(WeeklyCheckUp)
+    }
+
+    onResponse<RequestRepeat>{
+        furhat.gesture(Gestures.Smile)
+        furhat.say("Sure! I'll repeat")
+        goto(currentState)
     }
 }
 
@@ -201,32 +212,129 @@ val LonelyFeelingConversation = state(Interaction) {
 
     onResponse<Yes>{
         furhat.gesture(Gestures.Oh)
-        //goto(WeeklyIntroduction)
+        furhat.say("That’s understandable with the current situation.")
+        goto(LonelyFeelingContinution)
     }
 
     onResponse<No>{
         furhat.gesture(Gestures.BigSmile)
         furhat.say("I’m very glad to hear that!")
-        //goto()
+        goto(LonelyFeelingContinution)
     }
 }
 
-val OnPositiveLonelyFeeling = state(Interaction) {
+val LonelyFeelingContinution = state(Interaction) {
     onEntry {
-        furhat.ask("That’s understandable with the current situation. Do you have any family or friends you can talk to?")
+        furhat.ask("Do you have any family or friends you can talk to?")
     }
 
     onResponse<Yes>{
         furhat.say(furhat.voice.emphasis("That is good"))
         hasFamily = true
         furhat.gesture(MyGesture)
-//        goto()
+        goto(SpokenToFamily)
     }
 
     onResponse<No>{
         furhat.gesture(Gestures.ExpressSad)
         furhat.say("I’m sorry to hear that")
         hasFamily = false
-        //goto()
+        goto(HobbiesConversation)
+    }
+}
+
+// About speaking to Family
+val SpokenToFamily = state(Interaction) {
+    onEntry {
+        furhat.ask("Have you spoken with your family or friends recently?")
+    }
+
+    onResponse<Yes>{
+        furhat.say(furhat.voice.emphasis("That is good"))
+        furhat.gesture(MyGesture)
+        goto(HowAboutsOfFamily)
+    }
+
+    onResponse<No>{
+        furhat.gesture(Gestures.Smile)
+        furhat.say("I see. Perhaps you could call them later")
+        goto(HobbiesConversation)
+    }
+}
+
+// About howabouts of Family
+val HowAboutsOfFamily = state(Interaction) {
+    onEntry {
+        furhat.ask("Is your family doing ok?")
+    }
+
+    onResponse<Yes>{
+        furhat.gesture(Gestures.BigSmile)
+        furhat.say("I'm happy to hear that!")
+        furhat.gesture(MyGesture)
+        goto(HobbiesConversation)
+    }
+
+    onResponse<No>{
+        furhat.gesture(Gestures.ExpressSad)
+        furhat.say("I’m sad to hear that")
+        goto(HobbiesConversation)
+    }
+}
+
+// About hobbies
+val HobbiesConversation = state(Interaction) {
+    onEntry {
+        furhat.ask("What do you normally do during the day?")
+    }
+    onReentry {
+        furhat.ask("What do you normally do during the day?")
+    }
+
+    onResponse<HobbiesResponse>{
+        furhat.gesture(Gestures.Smile)
+        furhat.say("Alright!")
+        furhat.gesture(MyGesture)
+        goto(OnTodayConversation)
+    }
+
+    onResponse<RequestRepeat>{
+        furhat.gesture(Gestures.Smile)
+        furhat.say("Sure! I'll repeat.")
+        goto(currentState)
+    }
+}
+
+// About today
+val OnTodayConversation = state(Interaction) {
+    onEntry {
+        furhat.ask("Have you done anything interesting today?")
+    }
+    onReentry {
+        furhat.ask("Have you done anything interesting today?")
+    }
+
+    onResponse<Yes>{
+        furhat.gesture(Gestures.BigSmile)
+        furhat.say("It’s good that you’re doing interesting things!")
+        furhat.gesture(Gestures.Smile)
+        furhat.say("It was nice talking to you!")
+        furhat.gesture(Gestures.Wink)
+        terminate()
+    }
+
+    onResponse<No>{
+        furhat.gesture(Gestures.Thoughtful)
+        furhat.say("Perhaps you can find something interesting to do later")
+        furhat.gesture(Gestures.Smile)
+        furhat.say("It was nice talking to you!")
+        furhat.gesture(Gestures.Wink)
+        terminate()
+    }
+
+    onResponse<RequestRepeat>{
+        furhat.gesture(Gestures.Smile)
+        furhat.say("Sure! I'll repeat")
+        goto(currentState)
     }
 }
