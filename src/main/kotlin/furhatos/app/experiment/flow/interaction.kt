@@ -46,7 +46,7 @@ val Start : State = state(Interaction) {
     onResponse<RequestRepeat>{
         furhat.gesture(Gestures.Smile)
         furhat.say("Sure! I'll repeat")
-        goto(currentState)
+        reentry()
     }
 }
 
@@ -102,7 +102,7 @@ val WeeklyIntroduction = state(Interaction) {
     onResponse<RequestRepeat>{
         furhat.gesture(Gestures.Smile)
         furhat.say("Sure! I'll repeat")
-        goto(currentState)
+        reentry()
     }
 }
 
@@ -131,7 +131,7 @@ val WeeklyCheckUp = state(Interaction) {
     onResponse<RequestRepeat>{
         furhat.gesture(Gestures.Smile)
         furhat.say("Sure! I'll repeat")
-        goto(currentState)
+        reentry()
     }
 }
 
@@ -167,7 +167,7 @@ val NegativeMedicationResponse = state(Interaction) {
     onResponse<RequestRepeat>{
         furhat.gesture(Gestures.Smile)
         furhat.say("Sure! I'll repeat")
-        goto(currentState)
+        reentry()
     }
 }
 
@@ -194,7 +194,7 @@ val SleepWellConversation = state(Interaction) {
     onResponse<RequestRepeat>{
         furhat.gesture(Gestures.Smile)
         furhat.say("Sure! I'll repeat")
-        goto(currentState)
+        reentry()
     }
 }
 
@@ -221,7 +221,7 @@ val TiredFeelingConversation = state(Interaction) {
     onResponse<RequestRepeat>{
         furhat.gesture(Gestures.Smile)
         furhat.say("Sure! I'll repeat")
-        goto(currentState)
+        reentry()
     }
 }
 
@@ -250,7 +250,7 @@ val PositiveTiredResponse = state(Interaction) {
     onResponse<RequestRepeat>{
         furhat.gesture(Gestures.Smile)
         furhat.say("Sure! I'll repeat")
-        goto(currentState)
+        reentry()
     }
 }
 
@@ -279,7 +279,7 @@ val LonelyFeelingConversation = state(Interaction) {
     onResponse<RequestRepeat>{
         furhat.gesture(Gestures.Smile)
         furhat.say("Sure! I'll repeat")
-        goto(currentState)
+        reentry()
     }
 }
 
@@ -309,7 +309,7 @@ val LonelyFeelingContinution = state(Interaction) {
     onResponse<RequestRepeat>{
         furhat.gesture(Gestures.Smile)
         furhat.say("Sure! I'll repeat")
-        goto(currentState)
+        reentry()
     }
 }
 
@@ -338,7 +338,7 @@ val SpokenToFamily = state(Interaction) {
     onResponse<RequestRepeat>{
         furhat.gesture(Gestures.Smile)
         furhat.say("Sure! I'll repeat")
-        goto(currentState)
+        reentry()
     }
 }
 
@@ -368,7 +368,7 @@ val HowAboutsOfFamily = state(Interaction) {
     onResponse<RequestRepeat>{
         furhat.gesture(Gestures.Smile)
         furhat.say("Sure! I'll repeat")
-        goto(currentState)
+        reentry()
     }
 }
 
@@ -391,7 +391,7 @@ val HobbiesConversation = state(Interaction) {
     onResponse<RequestRepeat>{
         furhat.gesture(Gestures.Smile)
         furhat.say("Sure! I'll repeat.")
-        goto(currentState)
+        reentry()
     }
 }
 
@@ -425,6 +425,7 @@ val OnTodayConversation = state(Interaction) {
     onResponse<RequestRepeat>{
         furhat.gesture(Gestures.Smile)
         furhat.say("Sure! I'll repeat")
-        goto(currentState)
+        reentry()
     }
+
 }
